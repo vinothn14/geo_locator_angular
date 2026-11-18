@@ -1,0 +1,34 @@
+@if (coords) {
+  <div class="info-panel" role="complementary" aria-label="Location information">
+    <h2 class="info-panel__title">📍 My Location</h2>
+
+    <dl class="info-panel__data">
+      <div class="info-panel__row">
+        <dt class="info-panel__label">Latitude</dt>
+        <dd class="info-panel__value">{{ coords.lat }}°</dd>
+      </div>
+      <div class="info-panel__row">
+        <dt class="info-panel__label">Longitude</dt>
+        <dd class="info-panel__value">{{ coords.lng }}°</dd>
+      </div>
+      <div class="info-panel__row">
+        <dt class="info-panel__label">Accuracy</dt>
+        <dd class="info-panel__value">± {{ coords.accuracy }} m</dd>
+      </div>
+    </dl>
+
+    <div class="info-panel__actions">
+      <button
+        class="btn-copy"
+        aria-label="Copy coordinates to clipboard"
+        (click)="copyCoordinates()"
+      >
+        📋 Copy coordinates
+      </button>
+
+      @if (copied()) {
+        <span class="copy-confirm" role="status" aria-live="polite">✅ Copied!</span>
+      }
+    </div>
+  </div>
+}

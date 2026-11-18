@@ -1,0 +1,119 @@
+:host {
+  display: block;
+}
+
+.info-panel {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  background: var(--color-surface-glass, rgba(255, 255, 255, 0.92));
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-md, 12px);
+  padding: 14px 18px;
+  min-width: 220px;
+  max-width: 300px;
+  box-shadow: var(--shadow-md, 0 4px 24px rgba(0, 0, 0, 0.14));
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.6));
+  color: var(--color-text, #1a202c);
+  transition:
+    background-color var(--transition, 150ms ease),
+    border-color var(--transition, 150ms ease);
+
+  @media (max-width: 600px) {
+    top: 8px;
+    right: 8px;
+    left: 8px;
+    max-width: none;
+    min-width: unset;
+  }
+}
+
+.info-panel__title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text, #1a202c);
+  letter-spacing: 0.01em;
+}
+
+.info-panel__data {
+  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-panel__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.info-panel__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted, #64748b);
+  flex-shrink: 0;
+}
+
+.info-panel__value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text, #1a202c);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  margin: 0;
+}
+
+.info-panel__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius-sm, 6px);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text, #1a202c);
+  cursor: pointer;
+  transition: all var(--transition, 150ms ease);
+
+  &:hover {
+    background: var(--color-border, #e2e8f0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary, #3b82f6);
+    outline-offset: 2px;
+  }
+}
+
+.copy-confirm {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-success, #22c55e);
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

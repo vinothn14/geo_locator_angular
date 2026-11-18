@@ -56,10 +56,8 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "node_modules/leaflet/dist/css/leaflet.css",
-              "src/styles.scss"
-            ],
+            "styles": ["node_modules/leaflet/dist/leaflet.css", "src/styles.scss"],
+            "allowedCommonJsDependencies": ["leaflet"],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
@@ -89,9 +87,23 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "testing": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "styles": ["src/styles.scss"]
             }
           },
           "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "runner": "vitest",
+            "buildTarget": "geo-locator:build:testing"
+          }
         },
         "serve": {
           "builder": "@angular/build:dev-server",

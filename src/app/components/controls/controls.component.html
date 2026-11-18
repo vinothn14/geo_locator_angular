@@ -1,0 +1,71 @@
+<div class="controls-panel">
+  <!-- Accessible live region for status announcements -->
+  <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+    @if (isLocating) {
+      Locating your position, please wait...
+    } @else if (isSuccess) {
+      Location found successfully.
+    } @else if (isError) {
+      Error getting location. {{ friendlyErrorMessage(locationService.error()!) }}
+    }
+  </div>
+
+  @if (!locationService.isGeolocationSupported()) {
+    <div class="error-box" role="alert">
+      <span class="error-icon" aria-hidden="true">⚠️</span>
+      Your browser does not support geolocation.
+    </div>
+  } @else if (!locationService.isSecureContext()) {
+    <div class="error-box" role="alert">
+      <span class="error-icon" aria-hidden="true">🔒</span>
+      Geolocation requires a secure context (HTTPS or localhost).
+    </div>
+  } @else {
+    <div class="controls-actions">
+      <!-- Primary locate button -->
+      <button
+        class="btn btn-primary"
+        aria-label="Get my current location"
+        [disabled]="isLocating"
+        (click)="onLocateMe()"
+      >
+        @if (isLocating) {
+          <span class="spinner" aria-hidden="true"></span>
+          Locating...
+        } @else {
+          📍 Locate me
+        }
+      </button>
+
+      <!-- Error box with retry -->
+      @if (isError) {
+        <div class="error-box" role="alert">
+          <p class="error-message">
+            <span class="error-icon" aria-hidden="true">⚠️</span>
+            {{ friendlyErrorMessage(locationService.error()!) }}
+          </p>
+          <button class="btn btn-danger" aria-label="Retry getting location" (click)="onRetry()">
+            🔄 Try again
+          </button>
+        </div>
+      }
+
+      <!-- Track live toggle — shown after first success or while tracking -->
+      @if (isSuccess || locationService.isTracking()) {
+        <button
+          class="btn btn-secondary"
+          [attr.aria-pressed]="locationService.isTracking()"
+          aria-label="Toggle live location tracking"
+          [class.active]="locationService.isTracking()"
+          (click)="onToggleTracking()"
+        >
+          @if (locationService.isTracking()) {
+            🔴 Stop tracking
+          } @else {
+            🟢 Track live
+          }
+        </button>
+      }
+    </div>
+  }
+</div>
