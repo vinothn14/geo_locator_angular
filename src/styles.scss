@@ -1,1 +1,253 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================================
+   Geo Locator – Global Styles
+   Production-quality, theme-aware stylesheet.
+   No UI libraries; pure CSS custom properties + SCSS.
+   ========================================================================== */
+
+/* === CSS Custom Properties: Light Theme === */
+:root {
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-glass: rgba(255, 255, 255, 0.92);
+  --color-text: #1a202c;
+  --color-text-muted: #64748b;
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-focus: #1d4ed8;
+  --color-danger: #ef4444;
+  --color-danger-bg: #fef2f2;
+  --color-success: #22c55e;
+  --color-border: #e2e8f0;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px var(--color-shadow);
+  --shadow-md: 0 4px 16px var(--color-shadow);
+  --transition: 150ms ease;
+}
+
+/* === Dark Theme (explicit data-theme attribute) === */
+[data-theme='dark'] {
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-surface-glass: rgba(30, 41, 59, 0.92);
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-primary: #60a5fa;
+  --color-primary-hover: #3b82f6;
+  --color-primary-focus: #93c5fd;
+  --color-danger: #f87171;
+  --color-danger-bg: #2d1515;
+  --color-success: #4ade80;
+  --color-border: #334155;
+  --color-shadow: rgba(0, 0, 0, 0.4);
+}
+
+/* === Respect system prefers-color-scheme as fallback === */
+/* Applies dark vars when no explicit [data-theme] has been set by JS yet. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-bg: #0f172a;
+    --color-surface: #1e293b;
+    --color-surface-glass: rgba(30, 41, 59, 0.92);
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-primary: #60a5fa;
+    --color-primary-hover: #3b82f6;
+    --color-primary-focus: #93c5fd;
+    --color-danger: #f87171;
+    --color-danger-bg: #2d1515;
+    --color-success: #4ade80;
+    --color-border: #334155;
+    --color-shadow: rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* === Reset & Base === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+/* === Layout: full-height app shell === */
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* === Typography helpers === */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.25;
+  color: var(--color-text);
+}
+
+p {
+  color: var(--color-text);
+}
+
+small,
+.text-muted {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+/* === Links === */
+a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: var(--color-primary-hover);
+  }
+}
+
+/* === Buttons (base) === */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+/* === Focus visible (global a11y) === */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Remove default outline when :focus-visible is not needed */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* === Scrollbars (custom, subtle) === */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+
+  &:hover {
+    background: var(--color-text-muted);
+  }
+}
+
+/* === Selection === */
+::selection {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* === Leaflet overrides (theme-aware) === */
+.leaflet-popup-content-wrapper {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+}
+
+.leaflet-popup-tip {
+  background: var(--color-surface);
+}
+
+.leaflet-popup-content {
+  color: var(--color-text);
+  margin: 0.75rem 1rem;
+}
+
+.leaflet-container {
+  background: var(--color-bg);
+  font-family: inherit;
+}
+
+.leaflet-control-zoom a {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+
+  &:hover {
+    background: var(--color-bg);
+  }
+}
+
+.leaflet-control-attribution {
+  background: var(--color-surface-glass);
+  color: var(--color-text-muted);
+  backdrop-filter: blur(4px);
+
+  a {
+    color: var(--color-primary);
+  }
+}
+
+/* === Utility classes === */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.glass {
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+}
