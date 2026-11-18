@@ -1,11 +1,12 @@
 import {
   Component,
-  OnDestroy,
   inject,
   effect,
   afterNextRender,
   ChangeDetectionStrategy,
+  DestroyRef,
 } from '@angular/core';
+import type * as LeafletType from 'leaflet';
 import { LocationService } from '../../services/location.service';
 
 @Component({
@@ -15,30 +16,56 @@ import { LocationService } from '../../services/location.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
-export class MapComponent implements OnDestroy {
+export class MapComponent {
   private locationService = inject(LocationService);
-  private map: any = null; // typed as any until Leaflet is imported
-  private marker: any = null;
-  private circle: any = null;
-  private L: any = null; // Leaflet module reference
+  private destroyRef = inject(DestroyRef);
+
+  private map?: LeafletType.Map;
+  private marker?: LeafletType.Marker;
+  private circle?: LeafletType.Circle;
+  private L?: typeof LeafletType;
+  private isDestroyed = false;
 
   constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.isDestroyed = true;
+    });
+
     // Load Leaflet lazily after first render (avoids SSR window access)
     afterNextRender(async () => {
-      this.L = await import('leaflet');
+      const leafletModule = await import('leaflet');
+      if (this.isDestroyed) {
+        return;
+      }
+      this.L = leafletModule;
       this.initMap();
+
+      // Register resize listener and cleanup strictly in browser context
+      const onResize = () => {
+        this.map?.invalidateSize();
+      };
+      window.addEventListener('resize', onResize);
+
+      this.destroyRef.onDestroy(() => {
+        window.removeEventListener('resize', onResize);
+        if (this.map) {
+          this.map.remove();
+          this.map = undefined;
+        }
+      });
     });
 
     // React to position changes via effect
     effect(() => {
       const position = this.locationService.position();
-      if (position && this.map && this.L) {
+      if (position && this.map && this.L && !this.isDestroyed) {
         this.updateMapPosition(position);
       }
     });
   }
 
   private initMap(): void {
+    if (!this.L || this.isDestroyed) return;
     const L = this.L;
 
     // Fix default marker icon URLs
@@ -48,29 +75,24 @@ export class MapComponent implements OnDestroy {
       shadowUrl: '/assets/leaflet-images/marker-shadow.png',
     });
 
-    this.map = L.map('map', {
+    const map = L.map('map', {
       center: [20, 0],
       zoom: 2,
       zoomControl: true,
     });
+    this.map = map;
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution:
         '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(this.map);
+    }).addTo(map);
 
-    this.map.invalidateSize();
-
-    // Invalidate on window resize
-    window.addEventListener('resize', this.onResize);
+    map.invalidateSize();
   }
 
-  private onResize = (): void => {
-    this.map?.invalidateSize();
-  };
-
   private updateMapPosition(position: GeolocationPosition): void {
+    if (!this.map || !this.L || this.isDestroyed) return;
     const { latitude, longitude, accuracy } = position.coords;
     const latlng = this.L.latLng(latitude, longitude);
 
@@ -100,14 +122,6 @@ export class MapComponent implements OnDestroy {
         fillOpacity: 0.3,
         weight: 2,
       }).addTo(this.map);
-    }
-  }
-
-  ngOnDestroy(): void {
-    window.removeEventListener('resize', this.onResize);
-    if (this.map) {
-      this.map.remove();
-      this.map = null;
     }
   }
 }
