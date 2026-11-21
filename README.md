@@ -38,7 +38,7 @@ A production-quality, responsive Angular application that displays the user's re
 - **Info & Quick Copy Panel**: Floating panel displaying formatted coordinates and accuracy in meters, with a one-click clipboard copy button and visual confirmation.
 - **Light & Dark Theme**: Supports light and dark modes with persistence in `localStorage` (guarded with `try/catch`) and automatic fallback to `prefers-color-scheme`.
 - **Accessibility & Contrast**: ARIA labels on all interactive controls, `aria-live` polite status announcer for screen readers, and WCAG-compliant color contrast.
-- **SSR & Node Safe**: Safe execution under Angular Server-Side Rendering (SSR) via lazy dynamic Leaflet loading (`import('leaflet')` in `afterNextRender`) and platform browser guards (`isPlatformBrowser`).
+- **Prerender & Node Safe**: Safe execution during build-time prerendering via lazy dynamic Leaflet loading (`import('leaflet')` in `afterNextRender`) and platform browser guards (`isPlatformBrowser`).
 
 ---
 
@@ -87,7 +87,7 @@ Navigate to `http://localhost:4200/`. The application will automatically reload 
 npm run build
 ```
 
-The output will be placed in `dist/geo-locator` with client bundles and SSR server assets.
+The output will be placed in `dist/geo-locator/browser` with prerendered static HTML, client bundles, and copied Leaflet assets.
 
 ### Running Unit Tests
 
@@ -122,27 +122,24 @@ The application uses standard OpenStreetMap (OSM) raster tiles:
 
 ## 🌐 Deployment Guide
 
-### Deploy to Netlify
+### Deploy to Vercel (Recommended)
 
-1. **Push your code** to a GitHub/GitLab repository.
-2. In Netlify, click **Add new site** > **Import an existing project**.
-3. Set the build configuration:
-   - **Build command**: `npm run build`
-   - **Publish directory**: `dist/geo-locator/browser`
-4. Add a `_redirects` file in `public/_redirects`:
-   ```
-   /*    /index.html   200
-   ```
-5. Deploy site. Ensure HTTPS is enabled (automatically provisioned by Netlify).
-
-### Deploy to Vercel
-
-1. Import the repository into Vercel.
-2. Select the **Angular** framework preset.
-3. Configure settings:
+1. Import the repository into [Vercel](https://vercel.com).
+2. Vercel automatically detects the project using `vercel.json` and the **Angular** framework preset.
+3. Verify settings:
+   - **Framework Preset**: `Angular`
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist/geo-locator/browser`
-4. Deploy. Vercel automatically issues an SSL certificate for HTTPS.
+   - **Node.js Version**: `22.x` (enforced via `package.json` `engines`)
+4. Deploy. Vercel provisions HTTPS, which is strictly required for the browser Geolocation API.
+
+### Deploy to Netlify
+
+1. Import the repository in [Netlify](https://www.netlify.com).
+2. Configure settings:
+   - **Build Command**: `npm run build`
+   - **Publish Directory**: `dist/geo-locator/browser`
+3. Deploy. Ensure HTTPS is enabled (automatically provisioned by Netlify).
 
 ---
 
@@ -176,15 +173,16 @@ geo_locator_angular/
 │   │   ├── app.scss                   # Root layout styles
 │   │   ├── app.ts                     # Root AppComponent
 │   │   ├── app.config.ts              # Client application configuration
-│   │   └── app.config.server.ts       # SSR configuration
+│   │   ├── app.config.server.ts       # Prerendering server configuration
+│   │   └── app.routes.server.ts       # Server routes for prerendering
 │   ├── index.html                     # HTML entry point with metadata
 │   ├── main.ts                        # Client bootstrap
-│   ├── main.server.ts                 # Server bootstrap
-│   ├── server.ts                      # Express SSR server
+│   ├── main.server.ts                 # Build-time prerender bootstrap
 │   └── styles.scss                    # Global theme tokens, resets & Leaflet overrides
 ├── public/                            # Static public assets
 ├── angular.json                       # Angular CLI configuration & Leaflet asset globs
-├── package.json                       # Dependencies & scripts
+├── package.json                       # Dependencies, engines & scripts
+├── vercel.json                        # Vercel deployment configuration
 ├── tsconfig.json                      # Strict TypeScript compiler options
 └── README.md                          # Project documentation
 ```
