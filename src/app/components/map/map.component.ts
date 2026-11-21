@@ -22,6 +22,7 @@ export class MapComponent {
 
   private map?: LeafletType.Map;
   private marker?: LeafletType.Marker;
+  private markerIcon?: LeafletType.Icon;
   private circle?: LeafletType.Circle;
   private L?: typeof LeafletType;
   private isDestroyed = false;
@@ -68,11 +69,16 @@ export class MapComponent {
     if (!this.L || this.isDestroyed) return;
     const L = this.L;
 
-    // Fix default marker icon URLs
-    L.Icon.Default.mergeOptions({
-      iconUrl: '/assets/leaflet-images/marker-icon.png',
-      iconRetinaUrl: '/assets/leaflet-images/marker-icon-2x.png',
-      shadowUrl: '/assets/leaflet-images/marker-shadow.png',
+    // Create dedicated marker icon
+    this.markerIcon = L.icon({
+      iconUrl: 'assets/leaflet-images/marker-icon.png',
+      iconRetinaUrl: 'assets/leaflet-images/marker-icon-2x.png',
+      shadowUrl: 'assets/leaflet-images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      tooltipAnchor: [16, -28],
+      shadowSize: [41, 41],
     });
 
     const map = L.map('map', {
@@ -101,7 +107,7 @@ export class MapComponent {
     if (this.marker) {
       this.marker.setLatLng(latlng);
     } else {
-      this.marker = this.L.marker(latlng)
+      this.marker = this.L.marker(latlng, { icon: this.markerIcon })
         .addTo(this.map)
         .bindPopup(
           `<strong>Your Location</strong><br>
