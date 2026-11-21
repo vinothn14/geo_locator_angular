@@ -34,11 +34,30 @@ export class MapComponent {
 
     // Load Leaflet lazily after first render (avoids SSR window access)
     afterNextRender(async () => {
-      const leafletModule = await import('leaflet');
+      const leafletImport: any = await import('leaflet');
+      let leaflet = (leafletImport.default ?? leafletImport) as typeof LeafletType;
+      if (
+        typeof (leaflet as any).icon !== 'function' &&
+        typeof (leaflet as any).default?.icon === 'function'
+      ) {
+        leaflet = (leaflet as any).default;
+      }
+
+      if (typeof leaflet.map !== 'function' || typeof leaflet.icon !== 'function') {
+        console.error(
+          'Failed to load Leaflet: leaflet.map or leaflet.icon is not a function',
+          {
+            importKeys: Object.keys(leafletImport || {}),
+            defaultKeys: leafletImport?.default ? Object.keys(leafletImport.default) : null,
+          },
+        );
+        return;
+      }
+
       if (this.isDestroyed) {
         return;
       }
-      this.L = leafletModule;
+      this.L = leaflet;
       this.initMap();
 
       // Register resize listener and cleanup strictly in browser context
