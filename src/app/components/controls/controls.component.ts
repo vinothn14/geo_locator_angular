@@ -21,9 +21,6 @@ export class ControlsComponent {
   protected get isError() {
     return this.locationService.status() === 'error';
   }
-  protected get isIdle() {
-    return this.locationService.status() === 'idle';
-  }
 
   protected onLocateMe(): void {
     this.locationService.getCurrentPosition();

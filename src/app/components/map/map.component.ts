@@ -84,14 +84,15 @@ export class MapComponent {
     const map = L.map('map', {
       center: [20, 0],
       zoom: 2,
+      maxZoom: 19,
       zoomControl: true,
     });
     this.map = map;
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution:
-        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
     }).addTo(map);
 
     map.invalidateSize();

@@ -21,7 +21,6 @@
   --color-shadow: rgba(0, 0, 0, 0.1);
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 16px;
   --shadow-sm: 0 1px 3px var(--color-shadow);
   --shadow-md: 0 4px 16px var(--color-shadow);
   --transition: 150ms ease;
@@ -119,8 +118,7 @@ p {
   color: var(--color-text);
 }
 
-small,
-.text-muted {
+small {
   color: var(--color-text-muted);
   font-size: 0.875rem;
 }
@@ -205,6 +203,17 @@ button {
   font-family: inherit;
 }
 
+/* Raster basemap dark mode tile filter (does not affect marker, popup, or overlay panes) */
+[data-theme='dark'] .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+  }
+}
+
 .leaflet-control-zoom a {
   background: var(--color-surface);
   color: var(--color-text);
@@ -236,18 +245,4 @@ button {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
-
-.card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-}
-
-.glass {
-  background: var(--color-surface-glass);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--color-border);
 }

@@ -3,13 +3,6 @@ import { isPlatformBrowser } from '@angular/common';
 
 export type LocationStatus = 'idle' | 'locating' | 'success' | 'error';
 
-export interface LocationState {
-  status: LocationStatus;
-  position: GeolocationPosition | null;
-  error: GeolocationPositionError | null;
-  isTracking: boolean;
-}
-
 export function friendlyErrorMessage(error: GeolocationPositionError): string {
   switch (error.code) {
     case 1: // GeolocationPositionError.PERMISSION_DENIED

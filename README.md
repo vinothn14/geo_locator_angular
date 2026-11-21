@@ -111,6 +111,15 @@ Executes unit tests using Vitest across all service specs with mocked geolocatio
 
 ---
 
+## 🗺️ Map Tiles & Attribution
+
+The application uses standard OpenStreetMap (OSM) raster tiles:
+- **Tile URL**: `https://tile.openstreetmap.org/{z}/{x}/{y}.png`
+- **Attribution**: &copy; [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+- **Tile Usage Policy**: Tile requests adhere to the [OpenStreetMap Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/). Standard OSM tile servers are community-funded; high-volume production deployments should use dedicated tile services or custom tile caching.
+
+---
+
 ## 🌐 Deployment Guide
 
 ### Deploy to Netlify
